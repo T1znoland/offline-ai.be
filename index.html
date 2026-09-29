@@ -689,7 +689,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Bericht versturen</button>
         <div class="form-success" id="formSuccess" role="status" aria-live="polite">
-          <strong>Dank je!</strong> Je bericht is binnen (demo). In productie mailen we jou terug, of stuur meteen zelf een mailtje naar <a href="mailto:info@offline-ai.be" style="color:#8fe0b3; text-decoration:underline;">info@offline-ai.be</a>. We nemen binnen één werkdag contact op.
+          <strong>Dank je!</strong> Je e-mailprogramma opent met je bericht. Verstuur het en we nemen binnen één werkdag contact op.
         </div>
       </form>
     </div>
@@ -774,7 +774,7 @@
     fadeEls.forEach(function (el) { el.classList.add("in-view"); });
   }
 
-  /* --- contact form (front-end demo) --- */
+  /* --- contact form (mailto) --- */
   var form = document.getElementById("contactForm");
   var success = document.getElementById("formSuccess");
   form.addEventListener("submit", function (e) {
@@ -797,7 +797,12 @@
       return;
     }
     success.classList.add("visible");
-    form.reset();
+    var name = document.getElementById("fName").value.trim();
+    var email = document.getElementById("fEmail").value.trim();
+    var msg = document.getElementById("fMsg").value.trim();
+    var subject = "Bericht via offline-ai.be van " + name;
+    var body = "Naam: " + name + "\nE-mail: " + email + "\n\n" + msg;
+    window.location.href = "mailto:info@offline-ai.be?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
     success.setAttribute("tabindex", "-1");
     success.focus();
   });
