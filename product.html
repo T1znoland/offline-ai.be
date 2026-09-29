@@ -342,16 +342,66 @@
   }
   @media (min-width: 861px) { .nav-toggle { display: none; } }
   /* ---------- language switch & captcha ---------- */
-  .lang-switch { display: flex; align-items: center; gap: 0.35rem; margin-left: auto; }
+  .lang-switch {
+    display: flex; align-items: center; gap: 0.4rem; margin-left: auto;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 999px;
+    padding: 0.28rem 0.4rem; white-space: nowrap;
+  }
+  .lang-switch .lang-label {
+    color: var(--steel); font-size: 0.74rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 0 0.35rem;
+  }
   .lang-switch a.lang {
-    color: var(--muted); text-decoration: none; font-size: 0.8rem; font-weight: 700;
-    letter-spacing: 0.04em; padding: 0.32rem 0.5rem; border-radius: 8px; line-height: 1;
+    color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 700;
+    letter-spacing: 0.04em; padding: 0.42rem 0.65rem; border-radius: 999px; line-height: 1;
     border: 1px solid transparent;
   }
-  .lang-switch a.lang:hover { color: var(--text); border-color: var(--border); }
-  .lang-switch a.lang.active { color: var(--amber); border-color: rgba(240,166,60,0.45); background: var(--amber-dim); }
+  .lang-switch a.lang:hover { color: var(--text); background: var(--raised); }
+  .lang-switch a.lang.active { color: #14100a; background: var(--amber); border-color: var(--amber); }
   .honeypot { position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
 </style>
+<script>
+(function () {
+  "use strict";
+  var KEY = "oa_lang";
+  var cur = document.documentElement.lang || "nl";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) {}
+
+  // 1. Honour explicit ?lang=xx (for testing / forced language)
+  var qm = location.search.match(/[?&]lang=(nl|fr|en)\b/);
+  if (qm) {
+    try { localStorage.setItem(KEY, qm[1]); } catch (e2) {}
+    stored = qm[1];
+  }
+
+  // 2. Remember manual choices made via the language switcher
+  document.addEventListener("click", function (e) {
+    var el = e.target;
+    while (el && el.tagName !== "A") el = el.parentNode;
+    if (!el) return;
+    var hl = el.getAttribute && el.getAttribute("hreflang");
+    if (hl && el.closest && el.closest(".lang-switch")) {
+      try { localStorage.setItem(KEY, hl); } catch (e3) {}
+    }
+  }, true);
+
+  // 3. Auto-redirect from the default (NL) page, only when no stored preference
+  if (cur === "nl" && !stored) {
+    var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "nl").toLowerCase();
+    var target = null;
+    if (nav.indexOf("fr") === 0) target = "fr";
+    else if (nav.indexOf("en") === 0) target = "en";
+    if (target) {
+      try { localStorage.setItem(KEY, target); } catch (e4) {}
+      var isProduct = /product/.test(location.pathname);
+      var base = isProduct ? "product" : "index";
+      location.replace(base + "-" + target + ".html" + location.search + location.hash);
+    }
+  }
+})();
+</script>
+
 </head>
 <body>
 <a class="skip-link" href="#main">Naar de hoofdinhoud</a>
@@ -359,7 +409,7 @@
 <header class="site-header">
   <div class="container">
     <a class="brand" href="index.html" aria-label="offline-ai.be startpagina">offline-ai<span class="tld">.be</span></a>
-    <div class="lang-switch" role="navigation" aria-label="Taalkeuze"><a href="product.html" class="lang active" hreflang="nl" aria-current="true">NL</a><a href="product-fr.html" class="lang" hreflang="fr">FR</a><a href="product-en.html" class="lang" hreflang="en">EN</a></div>
+    <div class="lang-switch" role="navigation" aria-label="Taalkeuze"><span class="lang-label">Taal</span><a href="product.html" class="lang active" hreflang="nl" aria-current="true">NL</a><a href="product-fr.html" class="lang" hreflang="fr">FR</a><a href="product-en.html" class="lang" hreflang="en">EN</a></div>
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menu openen of sluiten">☰</button>
     <nav class="site-nav" id="siteNav" aria-label="Hoofdnavigatie">
       <ul>
