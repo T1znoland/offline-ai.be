@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /DESIGN.md
 
-Sitemap: https://offline-ai.be/sitemap.xml
+Sitemap: https://www.offline-ai.be/sitemap.xml
