@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI-Firewall Gateway — Product | offline-ai.be</title>
-<meta name="description" content="De AI-Firewall Gateway van offline-ai.be: één beveiligde toegangspoort naar al jouw AI-modellen. Automatische PII-masking, prompt-injectie-bescherming, slimme modelroutering en volledige auditlogging — volledig op jouw eigen hardware.">
+<title>AI-Firewall Gateway: Product | offline-ai.be</title>
+<meta name="description" content="De AI-Firewall Gateway van offline-ai.be: één beveiligde toegangspoort naar al jouw AI-modellen. Automatische PII-masking, prompt-injectie-bescherming, slimme modelroutering en volledige auditlogging, volledig op jouw eigen hardware.">
 <style>
   :root {
     --bg: #0e1116;
@@ -232,13 +232,15 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="brand" href="index.html" aria-label="offline-ai.be — startpagina">offline-ai<span class="tld">.be</span></a>
+    <a class="brand" href="index.html" aria-label="offline-ai.be startpagina">offline-ai<span class="tld">.be</span></a>
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menu openen of sluiten">☰</button>
     <nav class="site-nav" id="siteNav" aria-label="Hoofdnavigatie">
       <ul>
         <li><a href="index.html#diensten">Diensten</a></li>
         <li><a href="#product" class="active">Product</a></li>
         <li><a href="index.html#toepassingen">Toepassingen</a></li>
+        <li><a href="index.html#hoe">Hoe het werkt</a></li>
+        <li><a href="index.html#waarom">Waarom offline</a></li>
         <li><a href="index.html#faq">FAQ</a></li>
         <li><a href="index.html#contact" class="nav-cta">Plan een demo</a></li>
       </ul>
@@ -252,7 +254,7 @@
   <div class="container">
     <span class="kicker fade-up"><span class="dot"></span>Product · Ontworpen &amp; gebouwd in België</span>
     <h1 class="fade-up">De AI-Firewall <em>Gateway</em></h1>
-    <p class="sub fade-up">Eén beveiligde toegangspoort naar al jouw AI-modellen — lokaal en in de cloud. De gateway herkent automatisch <strong>gevoelige data</strong>, maskeert ze, blokkeert <strong>prompt-injecties</strong>, stuurt elke vraag naar het juiste model en houdt van <strong>elke request een auditlog</strong> bij. Jouw teams gebruiken gewoon AI. Jouw data blijft binnen de muren.</p>
+    <p class="sub fade-up">Eén beveiligde toegangspoort naar al jouw AI-modellen, lokaal en in de cloud. De gateway herkent automatisch <strong>gevoelige data</strong>, maskeert ze, blokkeert <strong>prompt-injecties</strong>, stuurt elke vraag naar het juiste model en houdt van <strong>elke request een auditlog</strong> bij. Jouw teams gebruiken gewoon AI. Jouw data blijft binnen de muren.</p>
     <div class="cta-row fade-up">
       <a class="btn btn-primary" href="index.html#contact">Vraag een live demo aan</a>
       <a class="btn btn-secondary" href="#pipeline">Zie hoe het werkzaam is</a>
@@ -274,7 +276,7 @@
   <div class="container">
     <div class="section-head center fade-up">
       <p class="section-eyebrow">De pijplijn</p>
-      <h2 id="pipeline-h">Wat er met elke vraag gebeurt — in minder dan een oogwenk</h2>
+      <h2 id="pipeline-h">Wat er met elke vraag gebeurt, in minder dan een oogwenk</h2>
       <p>Elke request loopt door vijf automatische controles vóór het een model bereikt. Dit is geen stappendiagram uit een brochure: het is de exacte volgorde waarin de code ze uitvoert.</p>
     </div>
     <div class="pipeline">
@@ -282,7 +284,7 @@
         <span class="num">1</span>
         <div>
           <h3>Gevoelige-data-herkenning <span class="tag tag-guard">altijd voorgaan</span></h3>
-          <p>E-mails, telefoonnummers, kaartnummers, wachtwoorden, API-sleutels, publieke IP-adressen — herkend met regex-patronen én semantische trefwoorden. Treffer? De vraag gaat <strong>verplicht naar een lokaal model</strong>, wat je ook had gevraagd.</p>
+          <p>E-mails, telefoonnummers, kaartnummers, wachtwoorden, API-sleutels, publieke IP-adressen, herkend met regex-patronen én semantische trefwoorden. Treffer? De vraag gaat <strong>verplicht naar een lokaal model</strong>, wat je ook had gevraagd.</p>
         </div>
       </div>
       <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
@@ -298,7 +300,7 @@
         <span class="num">3</span>
         <div>
           <h3>Intelligente routering <span class="tag tag-smart">vijf lagen</span></h3>
-          <p>Elke vraag komt bij het juiste model terecht: expliciete tags, configureerbare regex-routes, en — als niets matcht — <strong>semantische overeenkomst op embeddings</strong>. Jouw regels, live aanpasbaar, zonder herstart.</p>
+          <p>Elke vraag komt bij het juiste model terecht: expliciete tags, configureerbare regex-routes, en, als niets matcht, <strong>semantische overeenkomst op embeddings</strong>. Jouw regels, live aanpasbaar, zonder herstart.</p>
         </div>
       </div>
       <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
@@ -306,7 +308,7 @@
         <span class="num">4</span>
         <div>
           <h3>Automatische PII-masking</h3>
-          <p>Gevoelige gegevens worden <strong>in de prompt zelf gemaskeerd</strong> vóór verzending: <code style="color:var(--amber)">[EMAIL]</code>, <code style="color:var(--amber)">[PHONE]</code>, <code style="color:var(--amber)">[CRED]</code>. Interne IP-adressen blijven begrijpelijk — technische vragen blijven technisch leesbaar.</p>
+          <p>Gevoelige gegevens worden <strong>in de prompt zelf gemaskeerd</strong> vóór verzending: <code style="color:var(--amber)">[EMAIL]</code>, <code style="color:var(--amber)">[PHONE]</code>, <code style="color:var(--amber)">[CRED]</code>. Interne IP-adressen blijven begrijpelijk, zodat technische vragen technisch leesbaar blijven.</p>
         </div>
       </div>
       <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
@@ -320,7 +322,7 @@
     </div>
     <div class="callout fade-up">
       <span class="icon" aria-hidden="true">🛡️</span>
-      <p><strong>Verdediging in diepte, ingebouwd:</strong> stel dat een route ondanks alles naar een cloudmodel zou wijzen en de vraag bevat wél gevoelige data — dan wordt het request op het laatste moment <strong>gedwongen terug naar een lokaal model</strong>. Gevoelige content bereikt de cloud gewoonweg niet. Punt.</p>
+      <p><strong>Verdediging in diepte, ingebouwd:</strong> stel dat een route ondanks alles naar een cloudmodel zou wijzen en de vraag bevat wél gevoelige data, dan wordt het request op het laatste moment <strong>gedwongen terug naar een lokaal model</strong>. Gevoelige content bereikt de cloud gewoonweg niet. Punt.</p>
     </div>
   </div>
 </section>
@@ -331,7 +333,7 @@
     <div class="section-head fade-up">
       <p class="section-eyebrow">Functies</p>
       <h2 id="functies-h">Alles wat de gateway voor je doet</h2>
-      <p>Eén endpoint naar al je modellen, met een beveiligingslaag die standaard aan staat — niet als optie.</p>
+      <p>Eén endpoint naar al je modellen, met een beveiligingslaag die standaard aan staat, niet als optie.</p>
     </div>
     <div class="cards">
       <article class="card feature fade-up">
@@ -339,7 +341,7 @@
         <div>
           <span class="badge">Kernfunctie</span>
           <h3>Eén endpoint, al jouw modellen</h3>
-          <p>Jouw teams, scripts en agents praten met <strong>één OpenAI-compatibel adres</strong>. Achter die ene deur staan jouw lokale modellen (Ollama) en — indien jij dat toelaat — zorgvuldig gekozen cloudmodellen. Verander van model? Dat is één regel in de configuratie; geen enkele client merkt er iets van.</p>
+          <p>Jouw teams, scripts en agents praten met <strong>één OpenAI-compatibel adres</strong>. Achter die ene deur staan jouw lokale modellen (Ollama) en, indien jij dat toelaat, zorgvuldig gekozen cloudmodellen. Verander van model? Dat is één regel in de configuratie; geen enkele client merkt er iets van.</p>
         </div>
       </article>
       <article class="card fade-up">
@@ -355,7 +357,7 @@
       <article class="card fade-up">
         <div class="icon" aria-hidden="true">🎭</div>
         <h3>PII-firewall &amp; masking</h3>
-        <p>Kredietkaarten, e-mails, telefoons, sleutels, wachtwoorden, publieke IP's — allemaal herkend en gemaskeerd, zowel in de prompt als in de logs.</p>
+        <p>Kredietkaarten, e-mails, telefoons, sleutels, wachtwoorden, publieke IP's, allemaal herkend en gemaskeerd, zowel in de prompt als in de logs.</p>
         <ul>
           <li>Sluwe patronen: kaarten met spaties/streepjes, Amex, API-keys</li>
           <li>Trefwoordvanger voor medische, bancaire en ID-context</li>
@@ -365,7 +367,7 @@
       <article class="card fade-up">
         <div class="icon" aria-hidden="true">🚫</div>
         <h3>Injectie-blokkade</h3>
-        <p>Jailbreak-pogingen en "ignore all instructions"- trucjes worden gelokaliseerd en <strong>buiten de cloud gehouden</strong> — automatisch, zonder dat je er iets voor doet.</p>
+        <p>Jailbreak-pogingen en "ignore all instructions"-trucjes worden herkend en <strong>buiten de cloud gehouden</strong>, automatisch, zonder dat je er iets voor doet.</p>
       </article>
       <article class="card fade-up">
         <div class="icon" aria-hidden="true">🔁</div>
@@ -379,7 +381,7 @@
       <article class="card fade-up">
         <div class="icon" aria-hidden="true">📋</div>
         <h3>Volledige auditlogging</h3>
-        <p>Append-only log van elke call: gemaskeerde input &amp; output, gerouteerd model, waarom die route, latentie en tokenverbruik — alles correleerbaar via request-ID.</p>
+        <p>Append-only log van elke call: gemaskeerde input &amp; output, gerouteerd model, waarom die route, latentie en tokenverbruik, alles correleerbaar via request-ID.</p>
       </article>
       <article class="card fade-up">
         <div class="icon" aria-hidden="true">🚨</div>
@@ -398,7 +400,7 @@
       <article class="card fade-up">
         <div class="icon" aria-hidden="true">📊</div>
         <h3>Eigen dashboard</h3>
-        <p>Live monitor, playground om routes te testen vóór je ze uitrolt, verbruiksdashboard, regels-editor met classificatie-test — geen externe dienst, draait gewoon bij jou.</p>
+        <p>Live monitor, playground om routes te testen vóór je ze uitrolt, verbruiksdashboard, regels-editor met classificatie-test, geen externe dienst, draait gewoon bij jou.</p>
       </article>
     </div>
   </div>
@@ -410,10 +412,10 @@
     <div class="section-head fade-up">
       <p class="section-eyebrow">Onder de motorkap</p>
       <h2 id="log-h">Zo ziet een gelogd request eruit</h2>
-      <p>Elke gebeurtenis wordt append-only weggeschreven — uitleesbaar met elke tool die je al hebt. Dit is een echte logregel, zo komt het binnen:</p>
+      <p>Elke gebeurtenis wordt append-only weggeschreven, uitleesbaar met elke tool die je al hebt. Dit is een echte logregel, zo komt het binnen:</p>
     </div>
     <div class="log-demo fade-up" role="img" aria-label="Voorbeeld van een gateway-logregel in JSON">
-      <span class="lg-title">logs/calls.jsonl — event "routed"</span>
+      <span class="lg-title">logs/calls.jsonl · event "routed"</span>
 {
   <span class="lg-key">"event"</span>: "routed",
   <span class="lg-key">"request_id"</span>: "9f3c21a7b8",
@@ -426,7 +428,7 @@
     </div>
     <div class="callout fade-up">
       <span class="icon" aria-hidden="true">💡</span>
-      <p><strong>Merk op:</strong> de klant vroeg het snelle cloudmodel. De gateway herkende de gevoelige gegevens, maskeerde ze in de log, en stuurde de vraag verplicht naar het lokale privémodel. De klant merkte er niets van — behalve dat het gewoon werkte.</p>
+      <p><strong>Merk op:</strong> de klant vroeg het snelle cloudmodel. De gateway herkende de gevoelige gegevens, maskeerde ze in het log, en stuurde de vraag verplicht naar het lokale privémodel. De klant merkte er niets van, behalve dat het gewoon werkte.</p>
     </div>
   </div>
 </section>
@@ -500,7 +502,7 @@
 <!-- ===== CTA ===== -->
 <section id="demo" class="cta-band" aria-labelledby="demo-h">
   <div class="container">
-    <h2 id="demo-h" class="fade-up">Zie het gateway aan het werk — met jouw eigen vragen.</h2>
+    <h2 id="demo-h" class="fade-up">Zie de gateway aan het werk, met jouw eigen vragen.</h2>
     <p class="fade-up" style="color:var(--muted)">In de live demo sturen we jouw echte testvragen door de gateway, zodat je met eigen ogen ziet hoe PII wordt herkend, gemaskeerd en lokaal gehouden. Vrijblijvend.</p>
     <div class="fade-up">
       <a class="btn btn-primary" href="index.html#contact">Plan een gratis demo</a>
@@ -508,7 +510,7 @@
     </div>
     <div class="mini-steps">
       <div class="step fade-up"><h3>We luisteren</h3><p>Welke modellen gebruik je vandaag, en waar loopt het op vast met privacy?</p></div>
-      <div class="step fade-up"><h3>Ontwerp</h3><p>Jouw routingregels, jouw modellen, jouw gebruikers — in een concreet voorstel.</p></div>
+      <div class="step fade-up"><h3>Ontwerp</h3><p>Jouw routingregels, jouw modellen, jouw gebruikers, in een concreet voorstel.</p></div>
       <div class="step fade-up"><h3>Installatie</h3><p>Op jouw hardware, op jouw locatie. Getest met jouw echte use-cases.</p></div>
       <div class="step fade-up"><h3>Begeleiding</h3><p>Je leert de gateway zelf beheren; we blijven een oproep verwijderd.</p></div>
     </div>
@@ -529,7 +531,7 @@
       <a href="index.html#faq">FAQ</a>
       <a href="index.html#contact">Contact</a>
     </nav>
-    <p class="foot-copy">Made without a single cloud request. · © 2026 offline-ai.be — Alle rechten voorbehouden.</p>
+    <p class="foot-copy">Made without a single cloud request. · © 2026 offline-ai.be. Alle rechten voorbehouden.</p>
   </div>
 </footer>
 
