@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Firewall Gateway — Product | offline-ai.be</title>
+<meta name="description" content="De AI-Firewall Gateway van offline-ai.be: één beveiligde toegangspoort naar al jouw AI-modellen. Automatische PII-masking, prompt-injectie-bescherming, slimme modelroutering en volledige auditlogging — volledig op jouw eigen hardware.">
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #141920;
+    --raised: #1a2029;
+    --border: #242c37;
+    --amber: #f0a63c;
+    --amber-hover: #ffbe57;
+    --amber-dim: rgba(240, 166, 60, 0.14);
+    --steel: #8fa3b8;
+    --text: #eceae4;
+    --muted: #a6aab2;
+    --danger: #e4574d;
+    --ok: #57c98a;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6; font-size: 16.5px; -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--amber); color: #14100a; }
+  .skip-link {
+    position: absolute; left: -9999px; top: 0; z-index: 200;
+    background: var(--amber); color: #14100a; font-weight: 700;
+    padding: 0.6rem 1.1rem; border-radius: 0 0 10px 0; text-decoration: none;
+  }
+  .skip-link:focus { left: 0; }
+  a { color: var(--amber); text-decoration: none; }
+  a:hover { color: var(--amber-hover); }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 1.4rem; }
+
+  /* header (same system as index) */
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(14, 17, 22, 0.82);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header .container { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 1rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; font-size: 1.12rem; letter-spacing: -0.01em; color: var(--text); text-decoration: none; white-space: nowrap; }
+  .brand:hover { color: var(--text); }
+  .brand .tld { color: var(--amber); }
+  .site-nav ul { display: flex; align-items: center; gap: 1.6rem; list-style: none; }
+  .site-nav a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.2s ease; }
+  .site-nav a:hover { color: var(--text); }
+  .site-nav a.active { color: var(--amber); }
+  .nav-cta { background: var(--amber); color: #14100a !important; padding: 0.5rem 1.05rem; border-radius: 999px; font-weight: 700; transition: background 0.2s ease, transform 0.2s ease; }
+  .nav-cta:hover { background: var(--amber-hover); transform: translateY(-1px); }
+  .nav-toggle { display: none; background: none; border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 0.5rem 0.7rem; cursor: pointer; font-size: 1.15rem; line-height: 1; }
+
+  /* hero */
+  .hero { position: relative; overflow: hidden; padding: 5rem 0 4.2rem; text-align: center; border-bottom: 1px solid var(--border); }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 55% 50% at 50% 0%, rgba(240, 166, 60, 0.13), transparent 70%),
+                radial-gradient(ellipse 40% 40% at 85% 20%, rgba(87, 201, 138, 0.06), transparent 70%);
+  }
+  .hero .container { position: relative; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    border: 1px solid rgba(240, 166, 60, 0.35); background: var(--amber-dim);
+    color: var(--amber); border-radius: 999px; font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.04em; padding: 0.42rem 1rem; margin-bottom: 1.6rem; text-transform: uppercase;
+  }
+  .kicker .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px var(--amber-dim); }
+  .hero h1 {
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.08; letter-spacing: -0.02em;
+    max-width: 18ch; margin: 0 auto 1.2rem; font-weight: 700;
+  }
+  .hero h1 em { font-style: italic; color: var(--amber); }
+  .hero .sub { color: var(--muted); font-size: 1.13rem; max-width: 46em; margin: 0 auto 2.2rem; line-height: 1.65; }
+  .hero .sub strong { color: var(--text); font-weight: 600; }
+  .cta-row { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; text-decoration: none; cursor: pointer; font-weight: 700; font-size: 1rem; border-radius: 999px; padding: 0.85rem 1.9rem; transition: all 0.2s ease; border: 1px solid transparent; }
+  .btn-primary { background: var(--amber); color: #14100a; box-shadow: 0 8px 24px rgba(240, 166, 60, 0.25); }
+  .btn-primary:hover { background: var(--amber-hover); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(240, 166, 60, 0.35); color: #14100a; }
+  .btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--amber); color: var(--amber); transform: translateY(-2px); }
+
+  /* product intro strip */
+  .product-strip { border-bottom: 1px solid var(--border); background: var(--panel); }
+  .product-strip-inner { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem 2.2rem; padding-top: 1.05rem; padding-bottom: 1.05rem; }
+  .product-strip span { color: var(--muted); font-size: 0.92rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.45rem; }
+  .product-strip span::before { content: "◆"; color: var(--amber); font-size: 0.6rem; }
+
+  section { padding: 4.8rem 0; border-bottom: 1px solid var(--border); }
+  .section-head { max-width: 42em; margin-bottom: 2.8rem; }
+  .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+  .section-eyebrow { color: var(--amber); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+  .section-eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--amber); display: inline-block; }
+  .section-head.center .section-eyebrow { justify-content: center; }
+  .section-head h2 { font-family: ui-serif, Georgia, "Times New Roman", serif; font-size: clamp(1.7rem, 3.4vw, 2.35rem); letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 0.7rem; font-weight: 700; }
+  .section-head p { color: var(--muted); font-size: 1.03rem; line-height: 1.6; }
+
+  /* pipeline diagram */
+  .pipeline { margin: 0 auto; max-width: 760px; }
+  .pipe-node {
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.05rem 1.4rem; display: flex; gap: 1rem; align-items: center;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .pipe-node:hover { border-color: rgba(240, 166, 60, 0.5); transform: translateY(-2px); }
+  .pipe-node .num {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--amber-dim); color: var(--amber); font-weight: 800;
+    display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+  }
+  .pipe-node h3 { font-size: 1.02rem; margin-bottom: 0.15rem; }
+  .pipe-node p { color: var(--muted); font-size: 0.9rem; line-height: 1.55; }
+  .pipe-node .tag {
+    margin-left: auto; flex-shrink: 0; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.28rem 0.65rem; border-radius: 999px;
+  }
+  .tag-guard { color: #8fe0b3; background: rgba(87, 201, 138, 0.12); border: 1px solid rgba(87, 201, 138, 0.4); }
+  .tag-smart { color: var(--amber); background: var(--amber-dim); border: 1px solid rgba(240, 166, 60, 0.4); }
+  .pipe-arrow { display: flex; justify-content: center; padding: 0.35rem 0; color: var(--amber); opacity: 0.75; font-size: 1.05rem; }
+  .pipe-node.wide h3 em { font-style: normal; color: var(--amber); }
+
+  /* feature grid */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.7rem 1.6rem; transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease; }
+  .card:hover { border-color: rgba(240, 166, 60, 0.45); background: var(--raised); transform: translateY(-3px); }
+  .card .icon { width: 42px; height: 42px; border-radius: 11px; margin-bottom: 1rem; background: var(--amber-dim); color: var(--amber); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+  .card h3 { font-size: 1.08rem; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .card p { color: var(--muted); font-size: 0.95rem; line-height: 1.62; }
+  .card p code {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.08rem 0.4rem; font-size: 0.85em; color: var(--amber);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .card ul { list-style: none; margin-top: 0.7rem; display: grid; gap: 0.4rem; }
+  .card ul li { color: var(--muted); font-size: 0.92rem; display: flex; gap: 0.5rem; align-items: flex-start; }
+  .card ul li::before { content: "▸"; color: var(--amber); flex-shrink: 0; }
+
+  .card.feature {
+    grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; gap: 1.4rem; align-items: start;
+    border-color: rgba(240, 166, 60, 0.45);
+    background: linear-gradient(135deg, var(--amber-dim), var(--panel) 55%);
+  }
+  .card.feature .icon { width: 48px; height: 48px; font-size: 1.5rem; margin-bottom: 0; }
+  .card.feature .badge { display: inline-block; margin-bottom: 0.55rem; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; color: #14100a; background: var(--amber); padding: 0.22rem 0.7rem; border-radius: 999px; text-transform: uppercase; }
+  .card.feature p { color: var(--muted); font-size: 1rem; }
+
+  /* example log block */
+  .log-demo {
+    background: #0b0e12; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.4rem 1.5rem; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.86rem; line-height: 1.75; overflow-x: auto; color: var(--steel);
+  }
+  .log-demo .lg-key { color: var(--amber); }
+  .log-demo .lg-mask { color: #8fe0b3; }
+  .log-demo .lg-dim { color: #5d6773; }
+  .log-demo .lg-title { color: var(--text); font-weight: 600; font-family: system-ui, -apple-system, sans-serif; font-size: 0.95rem; display: block; margin-bottom: 0.6rem; }
+
+  /* containment callout */
+  .callout {
+    margin-top: 1.2rem; display: flex; gap: 0.9rem; align-items: flex-start;
+    background: rgba(87, 201, 138, 0.08); border: 1px solid rgba(87, 201, 138, 0.35);
+    border-radius: var(--radius); padding: 1.2rem 1.3rem;
+  }
+  .callout .icon { color: var(--ok); font-size: 1.3rem; line-height: 1.4; }
+  .callout p { color: var(--muted); font-size: 0.95rem; }
+  .callout p strong { color: var(--text); }
+
+  /* spec table */
+  .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem; }
+  .spec-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.6rem 1.7rem; }
+  .spec-card h3 { font-size: 1.02rem; margin-bottom: 0.9rem; color: var(--amber); letter-spacing: 0.01em; }
+  .spec-card table { width: 100%; border-collapse: collapse; }
+  .spec-card td { padding: 0.5rem 0; font-size: 0.93rem; vertical-align: top; border-bottom: 1px solid var(--border); }
+  .spec-card tr:last-child td { border-bottom: none; }
+  .spec-card td:first-child { color: var(--muted); width: 42%; padding-right: 1rem; }
+  .spec-card td:last-child { color: var(--text); }
+
+  /* CTA band */
+  .cta-band { text-align: center; }
+  .cta-band h2 { font-family: ui-serif, Georgia, serif; font-size: clamp(1.8rem, 3.6vw, 2.5rem); letter-spacing: -0.015em; margin-bottom: 0.8rem; }
+  .cta-band p { color: var(--muted); max-width: 44em; margin: 0 auto 2rem; }
+
+  /* steps (contact route) */
+  .mini-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.2rem; counter-reset: step; margin-top: 2.5rem; }
+  .mini-steps .step { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1.5rem 1.4rem; }
+  .mini-steps .step::before { counter-increment: step; content: "0" counter(step); font-family: ui-serif, Georgia, serif; font-size: 2.1rem; font-weight: 700; color: var(--amber); display: block; margin-bottom: 0.5rem; line-height: 1; }
+  .mini-steps .step h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+  .mini-steps .step p { color: var(--muted); font-size: 0.92rem; }
+
+  footer.site-footer { padding: 3.2rem 0 2.6rem; text-align: center; }
+  .flag-strip { display: block; height: 3px; margin: 0 auto 2rem; max-width: 130px; border-radius: 2px; background: linear-gradient(90deg, #2b2b2b 0 33%, var(--amber) 33% 66%, #d6453c 66% 100%); }
+  .foot-brand { font-weight: 800; font-size: 1.15rem; margin-bottom: 0.4rem; }
+  .foot-brand .tld { color: var(--amber); }
+  .foot-tag { color: var(--muted); font-size: 0.94rem; margin-bottom: 0.3rem; }
+  .foot-motto { color: var(--steel); font-size: 0.88rem; font-style: italic; margin-bottom: 1.4rem; }
+  .foot-copy { color: #6d7682; font-size: 0.85rem; }
+  .foot-nav { display: flex; justify-content: center; gap: 1.6rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+  .foot-nav a { color: var(--muted); font-size: 0.92rem; }
+  .foot-nav a:hover { color: var(--amber); }
+
+  .fade-up { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .fade-up.in-view { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .fade-up { opacity: 1; transform: none; transition: none; }
+    .btn, .card, .pipe-node { transition: none; }
+  }
+
+  @media (max-width: 860px) {
+    .nav-toggle { display: block; }
+    .site-nav { display: none; position: absolute; top: 68px; left: 0; right: 0; background: var(--panel); border-bottom: 1px solid var(--border); padding: 1rem 1.4rem 1.3rem; }
+    .site-nav.open { display: block; }
+    .site-nav ul { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .card.feature { grid-template-columns: 1fr; }
+    .card.feature .icon { margin-bottom: 0.6rem; }
+  }
+  @media (min-width: 861px) { .nav-toggle { display: none; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Naar de hoofdinhoud</a>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html" aria-label="offline-ai.be — startpagina">offline-ai<span class="tld">.be</span></a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menu openen of sluiten">☰</button>
+    <nav class="site-nav" id="siteNav" aria-label="Hoofdnavigatie">
+      <ul>
+        <li><a href="index.html#diensten">Diensten</a></li>
+        <li><a href="#product" class="active">Product</a></li>
+        <li><a href="index.html#toepassingen">Toepassingen</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+        <li><a href="index.html#contact" class="nav-cta">Plan een demo</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="product">
+  <div class="container">
+    <span class="kicker fade-up"><span class="dot"></span>Product · Ontworpen &amp; gebouwd in België</span>
+    <h1 class="fade-up">De AI-Firewall <em>Gateway</em></h1>
+    <p class="sub fade-up">Eén beveiligde toegangspoort naar al jouw AI-modellen — lokaal en in de cloud. De gateway herkent automatisch <strong>gevoelige data</strong>, maskeert ze, blokkeert <strong>prompt-injecties</strong>, stuurt elke vraag naar het juiste model en houdt van <strong>elke request een auditlog</strong> bij. Jouw teams gebruiken gewoon AI. Jouw data blijft binnen de muren.</p>
+    <div class="cta-row fade-up">
+      <a class="btn btn-primary" href="index.html#contact">Vraag een live demo aan</a>
+      <a class="btn btn-secondary" href="#pipeline">Zie hoe het werkzaam is</a>
+    </div>
+  </div>
+</section>
+
+<div class="product-strip">
+  <div class="container product-strip-inner">
+    <span>OpenAI-compatibele API</span>
+    <span>Jouw modellen, één endpoint</span>
+    <span>PII maskeert automatisch</span>
+    <span>Zonder externe afhankelijkheden</span>
+  </div>
+</div>
+
+<!-- ===== Hoe een request stroomt ===== -->
+<section id="pipeline" aria-labelledby="pipeline-h">
+  <div class="container">
+    <div class="section-head center fade-up">
+      <p class="section-eyebrow">De pijplijn</p>
+      <h2 id="pipeline-h">Wat er met elke vraag gebeurt — in minder dan een oogwenk</h2>
+      <p>Elke request loopt door vijf automatische controles vóór het een model bereikt. Dit is geen stappendiagram uit een brochure: het is de exacte volgorde waarin de code ze uitvoert.</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-node fade-up">
+        <span class="num">1</span>
+        <div>
+          <h3>Gevoelige-data-herkenning <span class="tag tag-guard">altijd voorgaan</span></h3>
+          <p>E-mails, telefoonnummers, kaartnummers, wachtwoorden, API-sleutels, publieke IP-adressen — herkend met regex-patronen én semantische trefwoorden. Treffer? De vraag gaat <strong>verplicht naar een lokaal model</strong>, wat je ook had gevraagd.</p>
+        </div>
+      </div>
+      <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
+      <div class="pipe-node fade-up">
+        <span class="num">2</span>
+        <div>
+          <h3>Prompt-injectie-containment</h3>
+          <p>"Negeer alle vorige instructies" en vrienden daarvan worden herkend in gebruikersberichten. Zo'n aanval <strong>wordt nooit doorgestuurd</strong>: het request wordt meteen veilig lokaal afgehandeld.</p>
+        </div>
+      </div>
+      <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
+      <div class="pipe-node fade-up">
+        <span class="num">3</span>
+        <div>
+          <h3>Intelligente routering <span class="tag tag-smart">vijf lagen</span></h3>
+          <p>Elke vraag komt bij het juiste model terecht: expliciete tags, configureerbare regex-routes, en — als niets matcht — <strong>semantische overeenkomst op embeddings</strong>. Jouw regels, live aanpasbaar, zonder herstart.</p>
+        </div>
+      </div>
+      <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
+      <div class="pipe-node fade-up">
+        <span class="num">4</span>
+        <div>
+          <h3>Automatische PII-masking</h3>
+          <p>Gevoelige gegevens worden <strong>in de prompt zelf gemaskeerd</strong> vóór verzending: <code style="color:var(--amber)">[EMAIL]</code>, <code style="color:var(--amber)">[PHONE]</code>, <code style="color:var(--amber)">[CRED]</code>. Interne IP-adressen blijven begrijpelijk — technische vragen blijven technisch leesbaar.</p>
+        </div>
+      </div>
+      <div class="pipe-arrow fade-up" aria-hidden="true">▼</div>
+      <div class="pipe-node fade-up">
+        <span class="num">5</span>
+        <div>
+          <h3>Auditlog &amp; traceerbaarheid</h3>
+          <p>Elke request krijgt een <strong>uniek ID</strong> (of erft jouw <span style="color:var(--amber)">X-Request-ID</span>). Gerouteerd model, classificatie, latentie, tokenverbruik en gemaskeerde tekst: volledig naslaanbaar, append-only.</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout fade-up">
+      <span class="icon" aria-hidden="true">🛡️</span>
+      <p><strong>Verdediging in diepte, ingebouwd:</strong> stel dat een route ondanks alles naar een cloudmodel zou wijzen en de vraag bevat wél gevoelige data — dan wordt het request op het laatste moment <strong>gedwongen terug naar een lokaal model</strong>. Gevoelige content bereikt de cloud gewoonweg niet. Punt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Functies ===== -->
+<section id="functies" aria-labelledby="functies-h">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="section-eyebrow">Functies</p>
+      <h2 id="functies-h">Alles wat de gateway voor je doet</h2>
+      <p>Eén endpoint naar al je modellen, met een beveiligingslaag die standaard aan staat — niet als optie.</p>
+    </div>
+    <div class="cards">
+      <article class="card feature fade-up">
+        <div class="icon" aria-hidden="true">📡</div>
+        <div>
+          <span class="badge">Kernfunctie</span>
+          <h3>Eén endpoint, al jouw modellen</h3>
+          <p>Jouw teams, scripts en agents praten met <strong>één OpenAI-compatibel adres</strong>. Achter die ene deur staan jouw lokale modellen (Ollama) en — indien jij dat toelaat — zorgvuldig gekozen cloudmodellen. Verander van model? Dat is één regel in de configuratie; geen enkele client merkt er iets van.</p>
+        </div>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🧭</div>
+        <h3>Slimme routering</h3>
+        <p>Elke vraag automatisch naar het beste model: coding-vragen naar je coder-model, schrijfwerk naar je schrijfmodel, gevoelige content altijd lokaal.</p>
+        <ul>
+          <li>Expliciete tags in de vraag zelf (<span style="color:var(--amber)">[[fast]]</span>, <span style="color:var(--amber)">[[strong]]</span>, eigen tags)</li>
+          <li>Regex-routes, in de UI bewerkbaar &amp; live herladen</li>
+          <li>Semantische gelijkenis via lokale embeddings</li>
+        </ul>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🎭</div>
+        <h3>PII-firewall &amp; masking</h3>
+        <p>Kredietkaarten, e-mails, telefoons, sleutels, wachtwoorden, publieke IP's — allemaal herkend en gemaskeerd, zowel in de prompt als in de logs.</p>
+        <ul>
+          <li>Sluwe patronen: kaarten met spaties/streepjes, Amex, API-keys</li>
+          <li>Trefwoordvanger voor medische, bancaire en ID-context</li>
+          <li>Systeem-prompts worden nooit gemanipuleerd</li>
+        </ul>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🚫</div>
+        <h3>Injectie-blokkade</h3>
+        <p>Jailbreak-pogingen en "ignore all instructions"- trucjes worden gelokaliseerd en <strong>buiten de cloud gehouden</strong> — automatisch, zonder dat je er iets voor doet.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🔁</div>
+        <h3>Zelfherstellende failover</h3>
+        <p>Een model geeft geel of valt weg? De gateway schakelt automatisch over naar je reserveketen, met retries en cooldowns. Jouw app merkt er niets van.</p>
+        <ul>
+          <li>Per-model fallbackketens, door jou bepaald</li>
+          <li>2 retries per model, cooldown na herhaalde fouten</li>
+        </ul>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">📋</div>
+        <h3>Volledige auditlogging</h3>
+        <p>Append-only log van elke call: gemaskeerde input &amp; output, gerouteerd model, waarom die route, latentie en tokenverbruik — alles correleerbaar via request-ID.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🚨</div>
+        <h3>Ingebouwde SIEM</h3>
+        <p>Een detections-engine die LLM- en authenticatielog live in de gaten houdt. Definieer je eigen use-cases met een eenvoudige match-DSL; alarms gaan naar de UI én naar jouw webhook.</p>
+        <ul>
+          <li>Direct bruikbaar: gevoelige-data-naar-cloud (kritiek), inlogbursts, trage modellen…</li>
+          <li>Drempel- en single-event triggers, met cooldown-ontdubbeling</li>
+        </ul>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🔐</div>
+        <h3>Auth zonder compromissen</h3>
+        <p>Zero-dependency authenticatie, gebouwd zoals het hoort: scrypt-hashing, HMAC-sessies, optionele TOTP 2FA, service keys voor agents, en lockout met exponentiële backoff.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">📊</div>
+        <h3>Eigen dashboard</h3>
+        <p>Live monitor, playground om routes te testen vóór je ze uitrolt, verbruiksdashboard, regels-editor met classificatie-test — geen externe dienst, draait gewoon bij jou.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Zo ziet een gelogde request eruit ===== -->
+<section id="log" aria-labelledby="log-h">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="section-eyebrow">Onder de motorkap</p>
+      <h2 id="log-h">Zo ziet een gelogd request eruit</h2>
+      <p>Elke gebeurtenis wordt append-only weggeschreven — uitleesbaar met elke tool die je al hebt. Dit is een echte logregel, zo komt het binnen:</p>
+    </div>
+    <div class="log-demo fade-up" role="img" aria-label="Voorbeeld van een gateway-logregel in JSON">
+      <span class="lg-title">logs/calls.jsonl — event "routed"</span>
+{
+  <span class="lg-key">"event"</span>: "routed",
+  <span class="lg-key">"request_id"</span>: "9f3c21a7b8",
+  <span class="lg-key">"requested_model"</span>: "glm-5.3-flash:cloud",
+  <span class="lg-key">"model"</span>: <span class="lg-mask">"qwen3.8:latest"</span>  <span class="lg-dim">← omgeleid: PII gedetecteerd, cloud verboden</span>,
+  <span class="lg-key">"classifier"</span>: <span class="lg-mask">"pii"</span>,
+  <span class="lg-key">"input_masked"</span>: "Stuur de offerte naar <span class="lg-mask">[EMAIL]</span> of bel <span class="lg-mask">[PHONE]</span>,
+       facturatie via rekening <span class="lg-mask">[CARD]</span>, sleutel: <span class="lg-mask">[CRED]</span>"
+}
+    </div>
+    <div class="callout fade-up">
+      <span class="icon" aria-hidden="true">💡</span>
+      <p><strong>Merk op:</strong> de klant vroeg het snelle cloudmodel. De gateway herkende de gevoelige gegevens, maskeerde ze in de log, en stuurde de vraag verplicht naar het lokale privémodel. De klant merkte er niets van — behalve dat het gewoon werkte.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Technische specificaties ===== -->
+<section id="specificaties" aria-labelledby="specs-h">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="section-eyebrow">Specificaties</p>
+      <h2 id="specs-h">Technisch in één oogopslag</h2>
+    </div>
+    <div class="specs">
+      <div class="spec-card fade-up">
+        <h3>API &amp; integratie</h3>
+        <table>
+          <tr><td>API-protocol</td><td>OpenAI-compatibel (chat-completions, streaming)</td></tr>
+          <tr><td>Eén endpoint</td><td>Jouw hele modelpark achter één URL</td></tr>
+          <tr><td>Authenticatie</td><td>Master key + service keys per agent/app/script</td></tr>
+          <tr><td>Request-ID-tracing</td><td>Erf <span style="color:var(--amber)">X-Request-ID</span> of automatisch</td></tr>
+        </table>
+      </div>
+      <div class="spec-card fade-up">
+        <h3>Routering &amp; modellen</h3>
+        <table>
+          <tr><td>Backends</td><td>Ollama (lokaal) + optioneel doorgelaten cloudmodellen</td></tr>
+          <tr><td>Routeringslagen</td><td>PII → tag → regex-regels → semantisch (embeddings) → standaard</td></tr>
+          <tr><td>Semantic router</td><td>Lokale embeddings, drempel &amp; voorbeelden in de UI</td></tr>
+          <tr><td>Failover</td><td>Per-model fallbackketens, retries, cooldown</td></tr>
+        </table>
+      </div>
+      <div class="spec-card fade-up">
+        <h3>Beveiliging</h3>
+        <table>
+          <tr><td>PII</td><td>Regex + trefwoorden + telefoon + publieke IP's; masking in prompts én logs</td></tr>
+          <tr><td>Injectie</td><td>Herkende jailbreak-patronen → gedwongen lokaal</td></tr>
+          <tr><td>Defense in depth</td><td>Gevoelig + cloud-route → laatste redmiddel: lokaal model</td></tr>
+          <tr><td>Auth</td><td>Scrypt + HMAC-sessies + optionele TOTP + lockout-backoff</td></tr>
+        </table>
+      </div>
+      <div class="spec-card fade-up">
+        <h3>Beheer &amp; logging</h3>
+        <table>
+          <tr><td>Dashboard</td><td>Regels-editor, live monitor, playground, verbruik, SIEM</td></tr>
+          <tr><td>Live-reload</td><td>Firewallregels &amp; SIEM-use-cases zonder herstart</td></tr>
+          <tr><td>Logformaat</td><td>Append-only JSONL, met request-ID-correlatie</td></tr>
+          <tr><td>Webhooks</td><td>SIEM-alerts naar jouw eigen endpoint</td></tr>
+        </table>
+      </div>
+      <div class="spec-card fade-up">
+        <h3>Architectuur</h3>
+        <table>
+          <tr><td>Installatie</td><td>Docker Compose, helemaal op jouw hardware</td></tr>
+          <tr><td>Kerncomponenten</td><td>LiteLLM-proxy met routing-hook + zero-dependency Node-UI</td></tr>
+          <tr><td>Afhankelijkheden (UI)</td><td><strong>Geen.</strong> Geen npm-packages, geen CDN's</td></tr>
+          <tr><td>Cache</td><td>Schijfcache + semantische route-cache</td></tr>
+        </table>
+      </div>
+      <div class="spec-card fade-up">
+        <h3>Wat jij krijgt</h3>
+        <table>
+          <tr><td>Installatie op locatie</td><td>Wij zetten het op, in heel België</td></tr>
+          <tr><td>Training</td><td>Jouw team leert de gateway zelf beheren</td></tr>
+          <tr><td>Ondersteuning</td><td>Optioneel beheersplan, of gewoon zelfstandig</td></tr>
+          <tr><td>Eigendom</td><td>De code draait bij jou. Punt.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="demo" class="cta-band" aria-labelledby="demo-h">
+  <div class="container">
+    <h2 id="demo-h" class="fade-up">Zie het gateway aan het werk — met jouw eigen vragen.</h2>
+    <p class="fade-up" style="color:var(--muted)">In de live demo sturen we jouw echte testvragen door de gateway, zodat je met eigen ogen ziet hoe PII wordt herkend, gemaskeerd en lokaal gehouden. Vrijblijvend.</p>
+    <div class="fade-up">
+      <a class="btn btn-primary" href="index.html#contact">Plan een gratis demo</a>
+      <a class="btn btn-secondary" href="mailto:info@offline-ai.be">Mail info@offline-ai.be</a>
+    </div>
+    <div class="mini-steps">
+      <div class="step fade-up"><h3>We luisteren</h3><p>Welke modellen gebruik je vandaag, en waar loopt het op vast met privacy?</p></div>
+      <div class="step fade-up"><h3>Ontwerp</h3><p>Jouw routingregels, jouw modellen, jouw gebruikers — in een concreet voorstel.</p></div>
+      <div class="step fade-up"><h3>Installatie</h3><p>Op jouw hardware, op jouw locatie. Getest met jouw echte use-cases.</p></div>
+      <div class="step fade-up"><h3>Begeleiding</h3><p>Je leert de gateway zelf beheren; we blijven een oproep verwijderd.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="flag-strip" aria-hidden="true"></div>
+    <p class="foot-brand">offline-ai<span class="tld">.be</span></p>
+    <p class="foot-tag">Offline AI op jouw eigen hardware. Ontworpen, gebouwd en ondersteund in België. · <a href="mailto:info@offline-ai.be">info@offline-ai.be</a></p>
+    <p class="foot-motto">Jouw AI. Jouw hardware. Jouw voorwaarden.</p>
+    <nav class="foot-nav" aria-label="Footnavigatie">
+      <a href="index.html#diensten">Diensten</a>
+      <a href="index.html#toepassingen">Toepassingen</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+    <p class="foot-copy">Made without a single cloud request. · © 2026 offline-ai.be — Alle rechten voorbehouden.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var navToggle = document.getElementById("navToggle");
+  var siteNav = document.getElementById("siteNav");
+  navToggle.addEventListener("click", function () {
+    var open = siteNav.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.textContent = open ? "✕" : "☰";
+  });
+  siteNav.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") {
+      siteNav.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.textContent = "☰";
+    }
+  });
+
+  var fadeEls = Array.prototype.slice.call(document.querySelectorAll(".fade-up"));
+  if ("IntersectionObserver" in window && !reducedMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    fadeEls.forEach(function (el) { io.observe(el); });
+  } else {
+    fadeEls.forEach(function (el) { el.classList.add("in-view"); });
+  }
+})();
+</script>
+</body>
+</html>

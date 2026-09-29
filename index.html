@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>offline-ai.be — Offline AI op jouw eigen hardware, gemaakt in België</title>
+<meta name="description" content="Volledig offline AI-systemen, ontworpen en gebouwd in België. Getraind op jouw eigen data, zonder dat jouw IP ooit de cloud ziet. Beveiliging, privacy en betrouwbaarheid bij ontwerp.">
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #141920;
+    --raised: #1a2029;
+    --border: #242c37;
+    --amber: #f0a63c;
+    --amber-hover: #ffbe57;
+    --amber-dim: rgba(240, 166, 60, 0.14);
+    --steel: #8fa3b8;
+    --text: #eceae4;
+    --muted: #a6aab2;
+    --danger: #e4574d;
+    --ok: #57c98a;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    font-size: 16.5px;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--amber); color: #14100a; }
+
+  .skip-link {
+    position: absolute; left: -9999px; top: 0; z-index: 200;
+    background: var(--amber); color: #14100a; font-weight: 700;
+    padding: 0.6rem 1.1rem; border-radius: 0 0 10px 0; text-decoration: none;
+  }
+  .skip-link:focus { left: 0; }
+
+  a { color: var(--amber); text-decoration: none; }
+  a:hover { color: var(--amber-hover); }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 1.4rem; }
+
+  /* ---------- header ---------- */
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(14, 17, 22, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header .container {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px; gap: 1rem;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-weight: 800; font-size: 1.12rem; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; white-space: nowrap;
+  }
+  .brand:hover { color: var(--text); }
+  .brand .dot { color: var(--amber); }
+  .brand .tld { color: var(--amber); }
+
+  .site-nav ul {
+    display: flex; align-items: center; gap: 1.6rem; list-style: none;
+  }
+  .site-nav a {
+    color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  .site-nav a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--amber); color: #14100a !important;
+    padding: 0.5rem 1.05rem; border-radius: 999px; font-weight: 700;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .nav-cta:hover { background: var(--amber-hover); transform: translateY(-1px); }
+
+  .nav-toggle {
+    display: none; background: none; border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); padding: 0.5rem 0.7rem;
+    cursor: pointer; font-size: 1.15rem; line-height: 1;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; overflow: hidden;
+    padding: 5.5rem 0 4.5rem; text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 50% at 50% 0%, rgba(240, 166, 60, 0.13), transparent 70%),
+      radial-gradient(ellipse 40% 40% at 85% 20%, rgba(143, 163, 184, 0.07), transparent 70%);
+  }
+  .hero .container { position: relative; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    border: 1px solid rgba(240, 166, 60, 0.35); background: var(--amber-dim);
+    color: var(--amber); border-radius: 999px;
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em;
+    padding: 0.42rem 1rem; margin-bottom: 1.6rem;
+    text-transform: uppercase;
+  }
+  .kicker .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--amber);
+    box-shadow: 0 0 0 3px var(--amber-dim);
+  }
+  .hero h1 {
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    font-size: clamp(2.3rem, 5.4vw, 3.9rem);
+    line-height: 1.08; letter-spacing: -0.02em;
+    max-width: 16ch; margin: 0 auto 1.2rem; font-weight: 700;
+  }
+  .hero h1 em { font-style: italic; color: var(--amber); }
+  .hero .sub {
+    color: var(--muted); font-size: 1.14rem; max-width: 46em;
+    margin: 0 auto 2.2rem; line-height: 1.65;
+  }
+  .hero .sub strong { color: var(--text); font-weight: 600; }
+  .cta-row { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-block; text-decoration: none; cursor: pointer;
+    font-weight: 700; font-size: 1rem; border-radius: 999px;
+    padding: 0.85rem 1.9rem; transition: all 0.2s ease; border: 1px solid transparent;
+  }
+  .btn-primary {
+    background: var(--amber); color: #14100a;
+    box-shadow: 0 8px 24px rgba(240, 166, 60, 0.25);
+  }
+  .btn-primary:hover { background: var(--amber-hover); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(240, 166, 60, 0.35); color: #14100a; }
+  .btn-secondary {
+    background: transparent; color: var(--text); border-color: var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--amber); color: var(--amber); transform: translateY(-2px); }
+
+  /* ---------- trust bar ---------- */
+  .trust {
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .trust .container {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 0.6rem 2.2rem; padding-top: 1.05rem; padding-bottom: 1.05rem;
+  }
+  .trust span {
+    color: var(--muted); font-size: 0.92rem; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 0.45rem;
+  }
+  .trust span::before { content: "◆"; color: var(--amber); font-size: 0.6rem; }
+
+  /* ---------- sections ---------- */
+  section { padding: 4.8rem 0; border-bottom: 1px solid var(--border); }
+  .section-head { max-width: 40em; margin-bottom: 2.8rem; }
+  .section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+  .section-eyebrow {
+    color: var(--amber); font-size: 0.82rem; font-weight: 700;
+    letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .section-eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--amber); display: inline-block; }
+  .section-head.center .section-eyebrow { justify-content: center; }
+  .section-head h2 {
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    font-size: clamp(1.7rem, 3.4vw, 2.35rem); letter-spacing: -0.015em;
+    line-height: 1.15; margin-bottom: 0.7rem; font-weight: 700;
+  }
+  .section-head p { color: var(--muted); font-size: 1.03rem; line-height: 1.6; }
+
+  /* ---------- pillars ---------- */
+  .pillars {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem;
+  }
+  .pillar {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.8rem 1.7rem;
+    transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+  }
+  .pillar:hover { border-color: rgba(240, 166, 60, 0.45); background: var(--raised); transform: translateY(-3px); }
+  .pillar .icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--amber-dim); color: var(--amber);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem; margin-bottom: 1.1rem;
+  }
+  .pillar h3 { font-size: 1.12rem; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .pillar p { color: var(--muted); font-size: 0.96rem; line-height: 1.6; }
+
+  /* ---------- services & use cases ---------- */
+  .cards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.7rem 1.6rem;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  }
+  .card:hover { border-color: rgba(240, 166, 60, 0.45); background: var(--raised); transform: translateY(-3px); }
+  .card .icon {
+    width: 42px; height: 42px; border-radius: 11px; margin-bottom: 1rem;
+    background: var(--amber-dim); color: var(--amber);
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+  }
+  .card h3 { font-size: 1.08rem; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .card p { color: var(--muted); font-size: 0.95rem; line-height: 1.62; }
+
+  .card.feature {
+    grid-column: 1 / -1;
+    display: grid; grid-template-columns: auto 1fr; gap: 1.4rem; align-items: start;
+    border-color: rgba(240, 166, 60, 0.45);
+    background: linear-gradient(135deg, var(--amber-dim), var(--panel) 55%);
+  }
+  .card.feature .icon { width: 48px; height: 48px; font-size: 1.5rem; margin-bottom: 0; }
+  .card.feature .badge {
+    display: inline-block; margin-bottom: 0.55rem;
+    font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em;
+    color: #14100a; background: var(--amber);
+    padding: 0.22rem 0.7rem; border-radius: 999px; text-transform: uppercase;
+  }
+  .card.feature p { color: var(--muted); font-size: 1rem; }
+
+  /* ---------- steps ---------- */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.2rem; counter-reset: step; }
+  .step {
+    position: relative; background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.7rem 1.6rem 1.6rem;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .step:hover { border-color: rgba(240, 166, 60, 0.45); transform: translateY(-3px); }
+  .step::before {
+    counter-increment: step; content: "0" counter(step);
+    font-family: ui-serif, Georgia, serif; font-size: 2.5rem; font-weight: 700;
+    color: var(--amber); opacity: 0.9; display: block; margin-bottom: 0.7rem; line-height: 1;
+  }
+  .step h3 { font-size: 1.06rem; margin-bottom: 0.45rem; }
+  .step p { color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
+
+  /* ---------- why ---------- */
+  .why-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.1rem; }
+  .why-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.45rem 1.5rem;
+    transition: border-color 0.25s ease;
+  }
+  .why-item:hover { border-color: rgba(240, 166, 60, 0.45); }
+  .why-item .tick {
+    color: var(--amber); font-size: 1.2rem; font-weight: 800; line-height: 1.3;
+  }
+  .why-item h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+  .why-item p { color: var(--muted); font-size: 0.94rem; line-height: 1.6; }
+
+  /* ---------- faq ---------- */
+  .faq-item {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--panel); margin-bottom: 0.8rem; overflow: hidden;
+    transition: border-color 0.25s ease;
+  }
+  .faq-item:hover { border-color: rgba(240, 166, 60, 0.35); }
+  .faq-q {
+    width: 100%; background: none; border: none; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    text-align: left; color: var(--text); font-size: 1.02rem; font-weight: 600;
+    padding: 1.2rem 1.4rem; font-family: inherit;
+  }
+  .faq-q:focus-visible { outline-offset: -4px; }
+  .faq-q .chev { transition: transform 0.3s ease; color: var(--amber); flex-shrink: 0; }
+  .faq-item.open .chev { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .faq-a p { padding: 0 1.4rem 1.3rem; color: var(--muted); line-height: 1.65; }
+  .faq-item.open { border-color: rgba(240, 166, 60, 0.45); }
+
+  /* ---------- contact ---------- */
+  .contact-wrap {
+    display: grid; grid-template-columns: 1fr 1.15fr; gap: 3rem; align-items: start;
+  }
+  .contact-info p { color: var(--muted); line-height: 1.7; margin-bottom: 1.4rem; max-width: 34em; }
+  .contact-points { list-style: none; display: grid; gap: 0.75rem; }
+  .contact-points li { display: flex; gap: 0.6rem; align-items: flex-start; color: var(--text); font-size: 0.97rem; }
+  .contact-points li::before { content: "◆"; color: var(--amber); font-size: 0.6rem; margin-top: 0.45em; }
+
+  .contact-form {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem;
+  }
+  .field { margin-bottom: 1.2rem; }
+  .field label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text); }
+  .field input, .field textarea {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); padding: 0.8rem 0.95rem;
+    font-size: 0.98rem; font-family: inherit; transition: border-color 0.2s ease;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--amber); outline: none; }
+  .field textarea { min-height: 130px; resize: vertical; }
+  .field .err { display: none; color: var(--danger); font-size: 0.84rem; margin-top: 0.35rem; }
+  .field.invalid input, .field.invalid textarea { border-color: var(--danger); }
+  .field.invalid .err { display: block; }
+
+  .form-success {
+    display: none; margin-top: 1rem; background: rgba(87, 201, 138, 0.12);
+    border: 1px solid rgba(87, 201, 138, 0.45); color: #8fe0b3;
+    padding: 0.95rem 1.1rem; border-radius: 10px; font-size: 0.96rem;
+  }
+  .form-success.visible { display: block; }
+
+  /* ---------- footer ---------- */
+  .site-footer { padding: 3.2rem 0 2.6rem; text-align: center; }
+  .flag-strip {
+    display: block; height: 3px; margin: 0 auto 2rem; max-width: 130px; border-radius: 2px;
+    background: linear-gradient(90deg, #2b2b2b 0 33%, var(--amber) 33% 66%, #d6453c 66% 100%);
+  }
+  .foot-brand { font-weight: 800; font-size: 1.15rem; margin-bottom: 0.4rem; }
+  .foot-brand .tld { color: var(--amber); }
+  .foot-tag { color: var(--muted); font-size: 0.94rem; margin-bottom: 0.3rem; }
+  .foot-motto { color: var(--steel); font-size: 0.88rem; font-style: italic; margin-bottom: 1.4rem; }
+  .foot-copy { color: #6d7682; font-size: 0.85rem; }
+
+  /* ---------- motion ---------- */
+  .fade-up { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .fade-up.in-view { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .fade-up { opacity: 1; transform: none; transition: none; }
+    .btn, .pillar, .card, .step, .why-item, .faq-q .chev { transition: none; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px) {
+    .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
+    .nav-toggle { display: block; }
+    .site-nav {
+      display: none; position: absolute; top: 68px; left: 0; right: 0;
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      padding: 1rem 1.4rem 1.3rem;
+    }
+    .site-nav.open { display: block; }
+    .site-nav ul { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+  @media (min-width: 861px) {
+    .nav-toggle { display: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Naar de hoofdinhoud</a>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="#top" aria-label="offline-ai.be — startpagina">
+      offline-ai<span class="tld">.be</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menu openen of sluiten">☰</button>
+    <nav class="site-nav" id="siteNav" aria-label="Hoofdnavigatie">
+      <ul>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="product.html">Product</a></li>
+        <li><a href="#toepassingen">Toepassingen</a></li>
+        <li><a href="#hoe">Hoe het werkt</a></li>
+        <li><a href="#waarom">Waarom offline</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact" class="nav-cta">Plan een demo</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" id="top">
+  <div class="container">
+    <span class="kicker fade-up"><span class="dot"></span>Volledig offline · Gemaakt in België</span>
+    <h1 class="fade-up">Jouw AI. Jouw hardware. <em>Jouw voorwaarden.</em></h1>
+    <p class="sub fade-up">Wij ontwerpen en bouwen AI-systemen die <strong>volledig op jouw eigen hardware</strong> draaien — voor maximale <strong>beveiliging</strong>, <strong>privacy</strong> en <strong>betrouwbaarheid</strong>. Geen cloud, geen abonnementen, en geen enkele data die ooit je gebouw verlaat.</p>
+    <div class="cta-row fade-up">
+      <a class="btn btn-primary" href="#contact">Plan een gratis gesprek</a>
+      <a class="btn btn-secondary" href="#toepassingen">Bekijk de toepassingen</a>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="container">
+    <span>100% offline</span>
+    <span>Ontworpen &amp; gebouwd in België</span>
+    <span>Geen abonnementen</span>
+    <span>Werkt ook zonder internet</span>
+  </div>
+</div>
+
+<section id="pijlers" aria-labelledby="pijlers-h">
+  <div class="container">
+    <div class="section-head center fade-up">
+      <p class="section-eyebrow">Onze belofte</p>
+      <h2 id="pijlers-h">Beveiliging. Privacy. Betrouwbaarheid.</h2>
+      <p>Zonder uitzonderingen. Drie pijlers, bij het ontwerp ingebouwd — niet erachteraan geplakt.</p>
+    </div>
+    <div class="pillars">
+      <article class="pillar fade-up">
+        <div class="icon" aria-hidden="true">🔒</div>
+        <h3>Beveiliging</h3>
+        <p>Geen externe endpoints, geen leaks via derden, geen aanvallen vanaf het internet. Je AI draait binnen je eigen muren — fysiek onbereikbaar van buitenaf, als je dat wil.</p>
+      </article>
+      <article class="pillar fade-up">
+        <div class="icon" aria-hidden="true">🛡️</div>
+        <h3>Privacy</h3>
+        <p>Jouw data verlaat je organisatie nooit. Geen telemetrie, geen logs bij derden, geen clausules in de kleine lettertjes. AVG-conform bij ontwerp — en dat is in onze architectuur letterlijk te noemen.</p>
+      </article>
+      <article class="pillar fade-up">
+        <div class="icon" aria-hidden="true">⚙️</div>
+        <h3>Betrouwbaarheid</h3>
+        <p>Geen prijswijzigingen van een cloudprovider, geen plotse end-of-life, geen internetstoring die je werk lamlegt. Jouw systeem werkt, elk uur, op jouw voorwaarden.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="diensten" aria-labelledby="diensten-h">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="section-eyebrow">Diensten</p>
+      <h2 id="diensten-h">Wat we voor je bouwen</h2>
+      <p>Van een assistent op één werkstation tot een volledig knowledge hub voor je hele organisatie. Alles lokaal, alles van jou.</p>
+    </div>
+    <div class="cards">
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">💬</div>
+        <h3>Privé-AI-assistent</h3>
+        <p>Een lokaal taalmodel dat chat, schrijft en samenvat — volledig op jouw machine. Niets wordt ooit ergens naartoe gestuurd.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">📚</div>
+        <h3>Documenten- &amp; knowledgehub</h3>
+        <p>Stel vragen over jouw eigen documenten en krijg antwoorden. Alles wordt lokaal geïndexeerd en verwerkt.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">👁️</div>
+        <h3>Beeld- &amp; documentanalyse</h3>
+        <p>Foto's, scans en rapporten beschrijven, sorteren en analyseren op je eigen hardware — ideaal voor gevoelig materiaal.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🔧</div>
+        <h3>Maatwerkintegraties</h3>
+        <p>We koppelen AI aan je bestaande workflow: kantoordocumenten, e-mailontwerpen, interne tools. Gebouwd rond hoe je al werkt.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="toepassingen" aria-labelledby="toepassingen-h">
+  <div class="container">
+    <div class="section-head center fade-up">
+      <p class="section-eyebrow">Toepassingen</p>
+      <h2 id="toepassingen-h">Concrete voorbeelden</h2>
+      <p>Zo gebruiken onze klanten hun offline AI — van vertrouwelijke bedrijfskennis tot sterk gereguleerde sectoren.</p>
+    </div>
+    <div class="cards">
+      <article class="card feature fade-up">
+        <div class="icon" aria-hidden="true">🧠</div>
+        <div>
+          <span class="badge">Meest gevraagd</span>
+          <h3>AI getraind op jouw eigen data — zonder jouw IP weg te geven</h3>
+          <p>Stel je voor: een AI die perfect is afgestemd op jouw productkennis, technische dossiers of klantengeschiedenis. Normaal betekent training in de cloud dat die data op servers van een Amerikaan of Chinees concern belandt — en dat jouw intellectuele eigendom daarmee buiten de deur staat. Bij ons gebeurt de volledige fine-tuning <strong>op jouw eigen hardware, binnen je eigen gebouw</strong>. Het model leert jouw data. De cloud ziet er geen letter van. Jouw IP blijft 100% jouw eigendom. <a href="product.html">Meer over onze AI-Firewall Gateway →</a></p>
+        </div>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">⚖️</div>
+        <h3>Advocaten- &amp; accountantskantoren</h3>
+        <p>Dossiers, contracten en jaarrekeningen samenvatten en bevragen — zonder dat cliëntgegevens ooit een externe server raken. AVG-verplichtingen? Ingebouwd.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🏥</div>
+        <h3>Zorgsector</h3>
+        <p>Patiëntverslagen, medische vragen en beeldanalyse op lokale servers. Strikt gereguleerde data blijft binnen de instelling, punt.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🏭</div>
+        <h3>Industrie &amp; engineering</h3>
+        <p>Technische documentatie, tekeningen en productieparameters doorzoekbaar voor je team — zonder dat je kernprocessen of klantenlijsten op een publieke cloud draaien.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🏛️</div>
+        <h3>Overheid &amp; publieke sector</h3>
+        <p>Vraaggestuurde toegang tot interne reglementen en dossiers, met garantie dat burgers' gegevens het land niet uit gaan.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">🔬</div>
+        <h3>Onderzoek &amp; R&amp;D</h3>
+        <p>Onderzoeksdata die contractueel niet gedeeld mag worden, toch doorzoeken en samenvatten. Publiceerbare resultaten, vertrouwelijke tussenstappen.</p>
+      </article>
+      <article class="card fade-up">
+        <div class="icon" aria-hidden="true">📞</div>
+        <h3>Interne klantenservice</h3>
+        <p>Een assistent die jouw producten, prijzen en procedures kent en klantvragen beantwoordt — met de kennis van jouw organisatie, op jouw infrastructuur, altijd bereikbaar.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="hoe" aria-labelledby="hoe-h">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="section-eyebrow">Hoe het werkt</p>
+      <h2 id="hoe-h">Van eerste gesprek tot vliegende start</h2>
+    </div>
+    <div class="steps">
+      <article class="step fade-up">
+        <h3>Vrijblijvend gesprek</h3>
+        <p>We luisteren. Wat wil je dat AI doet, en wat mag het absoluut nooit doen?</p>
+      </article>
+      <article class="step fade-up">
+        <h3>Ontwerp &amp; voorstel</h3>
+        <p>Een concreet plan: hardware, software, mogelijkheden en een vaste prijs. Geen verrassingen.</p>
+      </article>
+      <article class="step fade-up">
+        <h3>Bouw &amp; installatie</h3>
+        <p>We installeren alles op jouw locatie en testen van eind tot eind — met jouw echte data.</p>
+      </article>
+      <article class="step fade-up">
+        <h3>Opleiding &amp; begeleiding</h3>
+        <p>Je leert je eigen systeem gebruiken. Wij blijven bereikbaar, maar het systeem draait zonder ons.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="waarom" aria-labelledby="waarom-h">
+  <div class="container">
+    <div class="section-head fade-up">
+      <p class="section-eyebrow">Waarom offline</p>
+      <h2 id="waarom-h">Waarom bedrijven voor lokaal AI kiezen</h2>
+    </div>
+    <div class="why-list">
+      <div class="why-item fade-up">
+        <span class="tick">✔</span>
+        <div>
+          <h3>Privacy bij ontwerp</h3>
+          <p>Jouw data kan fysiek niet weg. Geen telemetrie, geen cloud, geen uitzonderingen.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up">
+        <span class="tick">✔</span>
+        <div>
+          <h3>Eénmalige investering</h3>
+          <p>Geen maandelijkse kosten. Het systeem is van jou, voor altijd.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up">
+        <span class="tick">✔</span>
+        <div>
+          <h3>Altijd bereikbaar</h3>
+          <p>Geen internetstoring, prijsaanpassing of stopgezette dienst die je werk platlegt.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up">
+        <span class="tick">✔</span>
+        <div>
+          <h3>Volledige controle</h3>
+          <p>Updaten wanneer jij wilt, uitbreiden wat jij wilt, eigenaar van elke byte.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up">
+        <span class="tick">✔</span>
+        <div>
+          <h3>Geen lock-in</h3>
+          <p>Geen abonnement dat opstart, geen prijsverhoging na 12 maanden. Eénmalig betalen, eeuwig gebruik.</p>
+        </div>
+      </div>
+      <div class="why-item fade-up">
+        <span class="tick">✔</span>
+        <div>
+          <h3>Gemaakt in België</h3>
+          <p>Ontworpen en gebouwd door Belgen. Europese wetgeving, Europese waarden, één aanspreekpunt dichtbij huis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" aria-labelledby="faq-h">
+  <div class="container">
+    <div class="section-head center fade-up">
+      <p class="section-eyebrow">FAQ</p>
+      <h2 id="faq-h">Veelgestelde vragen</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq-a1">
+          Is het écht volledig offline?
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a1" role="region">
+          <p style="padding-top:1rem;">Ja. Eenmaal geïnstalleerd draait het systeem volledig op jouw hardware. We kunnen zelfs de netwerktoegang volledig uitschakelen als je dat wilt — dan kan er fysiek niets naar buiten.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq-a2">
+          Wat als mijn vertrouwelijke data niet naar een cloud mag?
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a2" role="region">
+          <p style="padding-top:1rem;">Dat is net waar we goed in zijn. We trainen of stemmen het model af op jouw documenten <strong>op jouw eigen machines</strong>: fine-tuning, RAG of indexatie, alles lokaal. Je intellectuele eigendom verlaat je organisatie nooit — in tegenstelling tot cloudtraining, waar je data op servers van derden belandt.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq-a3">
+          Welke hardware heb ik nodig?
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a3" role="region">
+          <p style="padding-top:1rem;">Vaak wat je al hebt. Als er meer nodig is, specifiëren we exact wat en waarom — zonder upselling.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq-a4">
+          Hoe zit het met onderhoud en updates?
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a4" role="region">
+          <p style="padding-top:1rem;">Optioneel. We bieden beheersplannen aan, maar het systeem blijft draaien zonder ons. Jij bent de eigenaar.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq-a5">
+          Waarom een Belgische leverancier?
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a5" role="region">
+          <p style="padding-top:1rem;">Omdat offline AI meer is dan technologie — het is een keuze voor soevereiniteit. We vallen onder Europese wetgeving, spreken je taal, en zijn fysiek bereikbaar. Bij een cloudconcern uit het buitenland ben je een contractnummer. Bij ons ben je een buur.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq-a6">
+          Hoe beginnen we?
+          <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a6" role="region">
+          <p style="padding-top:1rem;">Met een gratis, vrijblijvend gesprek. Zie het contactformulier hieronder.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" aria-labelledby="contact-h">
+  <div class="container">
+    <div class="contact-wrap">
+      <div class="contact-info fade-up">
+        <p class="section-eyebrow">Contact</p>
+        <h2 style="font-family: ui-serif, Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 0.9rem; letter-spacing: -0.015em;">Laten we over jouw opstelling spreken.</h2>
+        <p>Vertel ons kort wat je nodig hebt. We antwoorden persoonlijk — meestal binnen één werkdag. Geen verkooppraat, gewoon eerlijk advies.</p>
+        <ul class="contact-points">
+          <li>Gratis en vrijblijvend eerste gesprek</li>
+          <li>Live demo van de AI-Firewall Gateway met jouw eigen testvragen</li>
+          <li>Concrete offerte met vaste prijs</li>
+          <li>Installatie bij jou op locatie, overal in België</li>
+          <li>Antwoord binnen één werkdag</li>
+        </ul>
+        <p style="margin-top:1.2rem; color:var(--muted); font-size:0.97rem;">Liever rechtstreeks? Mail ons: <a href="mailto:info@offline-ai.be" style="font-weight:600;">info@offline-ai.be</a></p>
+      </div>
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="field">
+          <label for="fName">Naam</label>
+          <input type="text" id="fName" name="name" autocomplete="name" required>
+          <span class="err">Vul je naam in.</span>
+        </div>
+        <div class="field">
+          <label for="fEmail">E-mail</label>
+          <input type="email" id="fEmail" name="email" autocomplete="email" required>
+          <span class="err">Vul een geldig e-mailadres in.</span>
+        </div>
+        <div class="field">
+          <label for="fMsg">Je bericht</label>
+          <textarea id="fMsg" name="message" placeholder="bv. 'We hebben 12 werknemers en willen een AI-assistent die onze technische fiches kent' of 'Ik wil gewoon even sparren over de mogelijkheden'…" required></textarea>
+          <span class="err">Vul je bericht in.</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Bericht versturen</button>
+        <div class="form-success" id="formSuccess" role="status" aria-live="polite">
+          <strong>Dank je!</strong> Je bericht is binnen (demo). In productie mailen we jou terug — of stuur meteen zelf een mailtje naar <a href="mailto:info@offline-ai.be" style="color:#8fe0b3; text-decoration:underline;">info@offline-ai.be</a>. We nemen binnen één werkdag contact op.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="flag-strip" aria-hidden="true"></div>
+    <p class="foot-brand">offline-ai<span class="tld">.be</span></p>
+    <p class="foot-tag">Offline AI op jouw eigen hardware. Ontworpen, gebouwd en ondersteund in België. · <a href="mailto:info@offline-ai.be">info@offline-ai.be</a></p>
+    <p class="foot-motto">Jouw AI. Jouw hardware. Jouw voorwaarden.</p>
+    <p class="foot-copy">Made without a single cloud request. · © 2026 offline-ai.be — Alle rechten voorbehouden.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* --- mobile navigation --- */
+  var navToggle = document.getElementById("navToggle");
+  var siteNav = document.getElementById("siteNav");
+  navToggle.addEventListener("click", function () {
+    var open = siteNav.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.textContent = open ? "✕" : "☰";
+  });
+  siteNav.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") {
+      siteNav.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.textContent = "☰";
+    }
+  });
+
+  /* --- FAQ accordion --- */
+  var faqItems = Array.prototype.slice.call(document.querySelectorAll(".faq-item"));
+  faqItems.forEach(function (item) {
+    var btn = item.querySelector(".faq-q");
+    var panel = item.querySelector(".faq-a");
+    btn.addEventListener("click", function () {
+      var isOpen = item.classList.contains("open");
+      faqItems.forEach(function (other) {
+        other.classList.remove("open");
+        other.querySelector(".faq-q").setAttribute("aria-expanded", "false");
+        other.querySelector(".faq-a").style.maxHeight = null;
+      });
+      if (!isOpen) {
+        item.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  });
+  window.addEventListener("resize", function () {
+    faqItems.forEach(function (item) {
+      if (item.classList.contains("open")) {
+        var panel = item.querySelector(".faq-a");
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  });
+
+  /* --- fade-up on scroll --- */
+  var fadeEls = Array.prototype.slice.call(document.querySelectorAll(".fade-up"));
+  if ("IntersectionObserver" in window && !reducedMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    fadeEls.forEach(function (el) { io.observe(el); });
+  } else {
+    fadeEls.forEach(function (el) { el.classList.add("in-view"); });
+  }
+
+  /* --- contact form (front-end demo) --- */
+  var form = document.getElementById("contactForm");
+  var success = document.getElementById("formSuccess");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var valid = true;
+    var nameField = document.getElementById("fName").closest(".field");
+    var emailField = document.getElementById("fEmail").closest(".field");
+    var msgField = document.getElementById("fMsg").closest(".field");
+    [nameField, emailField, msgField].forEach(function (f) {
+      f.classList.remove("invalid");
+      if (!f.querySelector("input, textarea").value.trim()) valid = false;
+    });
+    var emailVal = document.getElementById("fEmail").value.trim();
+    if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      emailField.classList.add("invalid"); valid = false;
+    }
+    if (!valid) {
+      var firstInvalid = form.querySelector(".field.invalid input, .field.invalid textarea");
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+    success.classList.add("visible");
+    form.reset();
+    success.setAttribute("tabindex", "-1");
+    success.focus();
+  });
+
+})();
+</script>
+</body>
+</html>
