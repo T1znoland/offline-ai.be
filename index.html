@@ -689,7 +689,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Bericht versturen</button>
         <div class="form-success" id="formSuccess" role="status" aria-live="polite">
-          <strong>Dank je!</strong> Je e-mailprogramma opent met je bericht. Verstuur het en we nemen binnen één werkdag contact op.
+          <strong>Dank je!</strong> Je bericht is verstuurd. We nemen binnen één werkdag contact op.
         </div>
       </form>
     </div>
@@ -774,9 +774,11 @@
     fadeEls.forEach(function (el) { el.classList.add("in-view"); });
   }
 
-  /* --- contact form (mailto) --- */
+  /* --- contact form (Formspree) --- */
+  var FORMSPREE_ID = "mkjgkvaj";
   var form = document.getElementById("contactForm");
   var success = document.getElementById("formSuccess");
+  var submitBtn = form.querySelector("button[type=submit]");
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var valid = true;
@@ -796,15 +798,39 @@
       if (firstInvalid) firstInvalid.focus();
       return;
     }
-    success.classList.add("visible");
-    var name = document.getElementById("fName").value.trim();
-    var email = document.getElementById("fEmail").value.trim();
-    var msg = document.getElementById("fMsg").value.trim();
-    var subject = "Bericht via offline-ai.be van " + name;
-    var body = "Naam: " + name + "\nE-mail: " + email + "\n\n" + msg;
-    window.location.href = "mailto:info@offline-ai.be?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-    success.setAttribute("tabindex", "-1");
-    success.focus();
+    if (!FORMSPREE_ID) {
+      success.innerHTML = "<strong>Bijna klaar:</strong> dit formulier is nog niet gekoppeld aan een Formspree-account.";
+      success.classList.add("visible");
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Versturen…";
+    var payload = {
+      naam: document.getElementById("fName").value.trim(),
+      email: document.getElementById("fEmail").value.trim(),
+      bericht: document.getElementById("fMsg").value.trim()
+    };
+    fetch("https://formspree.io/f/" + FORMSPREE_ID, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (res.ok) {
+        success.innerHTML = "<strong>Dank je!</strong> Je bericht is verstuurd. We nemen binnen één werkdag contact op.";
+        success.classList.add("visible");
+        form.reset();
+      } else {
+        throw new Error("formspree " + res.status);
+      }
+    }).catch(function () {
+      success.innerHTML = "<strong>Oeps:</strong> er ging iets mis bij het versturen. Probeer het opnieuw, of mail rechtstreeks naar <a href=\"mailto:info@offline-ai.be\" style=\"color:#8fe0b3; text-decoration:underline;\">info@offline-ai.be</a>.";
+      success.classList.add("visible");
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Bericht versturen";
+      success.setAttribute("tabindex", "-1");
+      success.focus();
+    });
   });
 
 })();
